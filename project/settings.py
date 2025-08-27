@@ -13,8 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Allowed Hosts (comma separated)
-ALLOWED_HOSTS = ["*"
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Build paths
@@ -166,13 +165,13 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "PORT": os.environ.get("POSTGRES_PORT"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'myproject',
+        'USER': 'myprojectuser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
