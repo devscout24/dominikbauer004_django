@@ -27,8 +27,8 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=6),
 }
 
 # Django REST Framework
@@ -46,33 +46,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@yourdomain.com')
-
-# Custom settings from env
-FRONTEND_LOGIN_URL = os.getenv('FRONTEND_LOGIN_URL', 'http://127.0.0.1:8080/api/v1/auth/login/')
-SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@yourdomain.com')
-SITE_NAME = os.getenv('SITE_NAME', 'PUCEST')
-
 # Custom User
 AUTH_USER_MODEL = 'User.CustomUser'
 
-# UNFOLD = {
-#     "SITE_TITLE": "PUCEST Admin Dashboard",
-#     "SITE_HEADER": "PUCEST Admin Panel",
-#     "SHOW_HISTORY": True,
-#     "DARK_MODE": True,
-#     "SIDEBAR": {
-#         "show_search": True,
-#         "show_all_applications": True,
-#     }
-# }
 
 JAZZMIN_SETTINGS = {
     "site_title": "PUCEST Admin",
@@ -166,16 +142,15 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "PORT": os.environ.get("POSTGRES_PORT"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'myproject',
+        'USER': 'myprojectuser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 
 
