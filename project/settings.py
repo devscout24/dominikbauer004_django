@@ -13,8 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Allowed Hosts (comma separated)
-ALLOWED_HOSTS = ["*"
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Build paths
