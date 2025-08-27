@@ -31,5 +31,5 @@ class InquiryAdmin(admin.ModelAdmin):
         fields = list(self.readonly_fields)
         if not request.user.is_superuser:
             # Staff can't edit user/contact_person
-            fields += ['offer_number', 'user', 'phone', 'contact_person', 'is_approved', 'created_at']  # Staff will still upload PDF
+            fields += ['offer_number', 'user', 'phone', 'contact_person', 'created_at']  # Staff will still upload PDF
         return fields
