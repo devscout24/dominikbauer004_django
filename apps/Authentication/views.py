@@ -17,7 +17,7 @@ from rest_framework import status, viewsets, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-
+from apps.contacts.serializers import UserSelectContactSerializer
 from .serializers import RegisterSerializer, PasswordResetRequestSerializer
 
 # Create your views here.
@@ -65,7 +65,7 @@ class RegisterView(BaseAPIView):
         
 class LoginView(BaseAPIView):
     permission_classes = [AllowAny]
-    authentication_classes= []
+    authentication_classes = []
 
     def post(self, request):
         try:
@@ -87,7 +87,6 @@ class LoginView(BaseAPIView):
                 user_exists = False
                 is_active_status = False
 
-            # If user exists but is inactive, return immediately
             if user_exists and not is_active_status:
                 return self.error_response(
                     message="Account inactive",
@@ -102,7 +101,7 @@ class LoginView(BaseAPIView):
                     status_code=status.HTTP_403_FORBIDDEN
                 )
 
-            # Proceed with authentication only if account is active or doesn't exist
+            # Authenticate
             user = authenticate(request, customer_number=customer_number, password=password)
 
             if not user:
@@ -119,20 +118,35 @@ class LoginView(BaseAPIView):
                     status_code=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Generate tokens for successful login
+            # Generate tokens
             refresh = RefreshToken.for_user(user)
+
+            # ------------------------
+            # Selected Contact Person
+            # ------------------------
+            selected_contact_data = None
+            try:
+                selected_contact = getattr(user, "selected_contact", None)
+                if selected_contact:
+                    selected_serializer = UserSelectContactSerializer(selected_contact)
+                    selected_contact_data = selected_serializer.data
+            except Exception:
+                selected_contact_data = None
+
+            response_data = {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "debug": {
+                    "user_exists": True,
+                    "is_active": True,
+                    "auth_success": True
+                },
+                "selected_contact_person": selected_contact_data
+            }
 
             return self.success_response(
                 message="Login successful",
-                data={
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                    "debug": {
-                        "user_exists": True,
-                        "is_active": True,
-                        "auth_success": True
-                    }
-                }
+                data=response_data
             )
 
         except ValidationError as e:
@@ -147,7 +161,7 @@ class LoginView(BaseAPIView):
                 data={"error": str(e)},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-            
+
             
 class LogoutView(BaseAPIView):
     permission_classes = [IsAuthenticated]
