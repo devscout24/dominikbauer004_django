@@ -21,3 +21,12 @@ class PasswordResetRequest(models.Model):
         status = "completed" if self.completed else "pending"
         return f"Reset request for {self.user.customer_number} ({status})"
 
+
+class RegistrationRequest(models.Model):
+    customer_number = models.CharField(max_length=20, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.customer_number} - {'approved' if self.approved else 'pending'}"
