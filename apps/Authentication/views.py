@@ -45,24 +45,24 @@ class BaseAPIView(APIView):
             status=status_code )    
         
 class RegisterView(BaseAPIView):
-    permission_classes= [AllowAny]
-    authentication_classes= []
-    
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
     def post(self, request):
-        serializer=  RegisterSerializer(data= request.data)
-        
+        serializer = RegisterSerializer(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return self.success_response("User Registered successfully", data= serializer.data, status_code=status.HTTP_201_CREATED)
-        
+            return self.success_response(
+                "Registration request submitted. Admin will review it.",
+                data=serializer.data,
+                status_code=status.HTTP_201_CREATED
+            )
         except ValidationError as e:
             return self.error_response("Validation Error", data=e.detail)
-        
         except Exception as e:
-            return self.error_response("An error occurred", data= str(e), status_code= status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        
+            return self.error_response("An error occurred", data=str(e), status_code=500)
+
 class LoginView(BaseAPIView):
     permission_classes = [AllowAny]
     authentication_classes = []
@@ -192,13 +192,36 @@ class LogoutView(BaseAPIView):
             
             
 class RequestPasswordResetView(BaseAPIView):
-    permission_classes = [AllowAny]  # Allow any user
-    
+    permission_classes = [AllowAny]
+
     def post(self, request):
-        serializer= PasswordResetRequestSerializer(data= request.data)
-        
+        customer_number = request.data.get("customer_number")
+        if not customer_number:
+            return self.error_response(
+                "Validation error",
+                data={"customer_number": "This field is required."},
+                status_code=400
+            )
+
+        user = CustomUser.objects.filter(customer_number=customer_number).first()
+        if not user:
+            return self.error_response(
+                "User not found",
+                data={"customer_number": "No user exists with this customer number"},
+                status_code=404
+            )
+
+        serializer = PasswordResetRequestSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return self.success_response("Password reset request created successfully", data= serializer.data, status_code= status.HTTP_201_CREATED)         
-        
-        return self.error_response("Validation error", data= serializer)
+            serializer.save(user=user)
+            return self.success_response(
+                "Password reset request created successfully",
+                data=serializer.data,
+                status_code=201
+            )
+
+        return self.error_response(
+            "Validation error",
+            data=serializer.errors,
+            status_code=400
+        )

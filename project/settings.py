@@ -13,15 +13,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Allowed Hosts (comma separated)
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = ["*", "dominikbauer004.softvencealpha.com"]
+CSRF_TRUSTED_ORIGINS = ["https://dominikbauer004.softvencealpha.com"]
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG=False
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # JWT Configuration
@@ -70,6 +70,7 @@ JAZZMIN_SETTINGS = {
     "hide_models": [],
 }
 
+
 # Installed apps
 INSTALLED_APPS = [
     'jazzmin',
@@ -103,6 +104,7 @@ INSTALLED_APPS = [
 #     "http://localhost:5173",
 #     "https://94732f8a593d.ngrok-free.app",
 # ]
+
 
 
 # Middleware
@@ -174,14 +176,21 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+JAZZMIN_SETTINGS = {
+    "site_logo": "images/logo.png",   # String path relative to STATICFILES_DIRS
+    "login_logo": "images/logo.png",
+    "site_header": "PUCEST Admin",
+    "site_title": "PUCEST Admin Portal",
+}
+
+
 # Static & Media
 MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
-# Directory where collectstatic will collect static files
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles" 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
