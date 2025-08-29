@@ -18,9 +18,9 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = (
         'customer_number', 'company_name', 'email', 'phone',
-        'is_active', 'is_staff', 'is_superuser'
+        'is_active', 'is_staff', 'is_superuser','created_at'
     )
-
+    ordering = ('created_at',)
     fieldsets = (
         (None, {
             'fields': (

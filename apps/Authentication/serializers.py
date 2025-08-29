@@ -4,13 +4,14 @@ from .models import PasswordResetRequest, RegistrationRequest
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RegistrationRequest
+        model = CustomUser
         fields = ('customer_number',)
 
     def create(self, validated_data):
-        # Save a pending registration request
-        return RegistrationRequest.objects.create(**validated_data)
-
+        return CustomUser.objects.create_user(
+            customer_number=validated_data['customer_number'],
+            is_active=False  # inactive until admin edits
+        )
 
 
 class PasswordResetRequestSerializer(serializers.ModelSerializer):
@@ -22,6 +23,14 @@ class PasswordResetRequestSerializer(serializers.ModelSerializer):
         read_only_fields = ('reviewed', 'reviewed_by', 'requested_at', 'completed', 'completed_at')
 
     def create(self, validated_data):
-        # user must be passed from view
-        user = validated_data.pop('user')
+        customer_number = validated_data.pop('customer_number')
+        try:
+            user = CustomUser.objects.get(customer_number=customer_number)
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError(f"User with customer_number {customer_number} does not exist")
+        
+        # Ensure 'user' is not in validated_data
+        validated_data.pop('user', None)  # remove if exists
+
         return PasswordResetRequest.objects.create(user=user, **validated_data)
+

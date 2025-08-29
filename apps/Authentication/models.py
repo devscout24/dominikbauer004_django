@@ -30,3 +30,5 @@ class RegistrationRequest(models.Model):
 
     def __str__(self):
         return f"{self.customer_number} - {'approved' if self.approved else 'pending'}"
+
+
