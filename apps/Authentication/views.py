@@ -54,7 +54,7 @@ class RegisterView(BaseAPIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.success_response(
-                "Registration request submitted. Admin will review it.",
+                "User created. Admin will update full info and password.",
                 data=serializer.data,
                 status_code=status.HTTP_201_CREATED
             )

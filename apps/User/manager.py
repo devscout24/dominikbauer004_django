@@ -8,11 +8,13 @@ class CustomUserManager(BaseUserManager):
         if not customer_number:
             raise ValueError("Customer number is required")
         user = self.model(customer_number=customer_number, **extra_fields)
-        user.set_password(password)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()  # no password yet
         user.is_active = extra_fields.get('is_active', False)
         user.save(using=self._db)
         return user
-
 
     def create_superuser(self, customer_number, password=None, **extra_fields):
         extra_fields.setdefault('is_active', True)

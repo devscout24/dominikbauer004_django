@@ -129,7 +129,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -181,6 +181,8 @@ USE_TZ = True
 JAZZMIN_SETTINGS = {
     "site_header": "PUCEST Admin",
     "site_title": "PUCEST Admin Portal",
+     "site_logo": "images/logo.png",
+     "welcome_sign": "Welcome to PUCEST Admin Portal",
 }
 
 # Static & Media
@@ -189,6 +191,7 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
+os.path.join(BASE_DIR, 'static')
 # Directory where collectstatic will collect static files
 STATIC_ROOT = BASE_DIR / "staticfiles"
 

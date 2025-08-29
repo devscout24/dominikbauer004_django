@@ -21,6 +21,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     billing_location = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # Single delivery location
     delivery_location = models.ForeignKey(
@@ -46,6 +47,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+    
+    class Meta:
+        ordering = ['created_at']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
