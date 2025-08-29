@@ -7,7 +7,9 @@ class LocationInline(admin.TabularInline):
     model = Location
     fields = ["address"]
     extra = 1   # সবসময় অন্তত ১টা খালি row দেখাবে
-
+admin.site.site_header = "PUCEST Admin"
+admin.site.site_title = "PUCEST Admin Portal"
+admin.site.index_title = "Welcome to the PUCEST Admin Portal"
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):

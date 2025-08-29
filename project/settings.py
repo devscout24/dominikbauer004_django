@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG= False
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # JWT Configuration
@@ -175,12 +175,17 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+JAZZMIN_SETTINGS = {
+    "site_header": "PUCEST Admin",
+    "site_title": "PUCEST Admin Portal",
+}
+
 # Static & Media
 MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [BASE_DIR / "static"]
 # Directory where collectstatic will collect static files
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
