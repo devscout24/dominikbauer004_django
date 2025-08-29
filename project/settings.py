@@ -13,7 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Allowed Hosts (comma separated)
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "dominikbauer004.softvencealpha.com"]
+
+CSRF_TRUSTED_ORIGINS = ["https://dominikbauer004.softvencealpha.com"]
 
 
 # Build paths
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG= False
+DEBUG= True
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # JWT Configuration
