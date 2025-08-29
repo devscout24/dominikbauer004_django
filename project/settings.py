@@ -72,6 +72,7 @@ JAZZMIN_SETTINGS = {
     "hide_models": [],
 }
 
+
 # Installed apps
 INSTALLED_APPS = [
     'jazzmin',
@@ -105,6 +106,7 @@ INSTALLED_APPS = [
 #     "http://localhost:5173",
 #     "https://94732f8a593d.ngrok-free.app",
 # ]
+
 
 
 # Middleware
