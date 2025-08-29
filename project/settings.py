@@ -14,14 +14,16 @@ load_dotenv()
 
 # Allowed Hosts (comma separated)
 ALLOWED_HOSTS = ["*", "dominikbauer004.softvencealpha.com"]
+
 CSRF_TRUSTED_ORIGINS = ["https://dominikbauer004.softvencealpha.com"]
+
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG=False
+DEBUG= True
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # JWT Configuration
@@ -177,12 +179,9 @@ USE_I18N = True
 USE_TZ = True
 
 JAZZMIN_SETTINGS = {
-    "site_logo": "images/logo.png",   # String path relative to STATICFILES_DIRS
-    "login_logo": "images/logo.png",
     "site_header": "PUCEST Admin",
     "site_title": "PUCEST Admin Portal",
 }
-
 
 # Static & Media
 MEDIA_URL = '/media/'
@@ -190,7 +189,8 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles" 
+# Directory where collectstatic will collect static files
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
