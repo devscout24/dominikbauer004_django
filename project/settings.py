@@ -51,25 +51,124 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'User.CustomUser'
 
 
+# settings.py
+
 JAZZMIN_SETTINGS = {
     "site_title": "PUCEST Admin",
-    "site_header": "PUCEST Control Panel",
-    "site_brand": "PUCEST",
-    "welcome_sign": "Welcome to PUCEST Dashboard",
-    "copyright": "PUCEST Team © 2025",
-
-    # Icons for apps/models
+    "site_header": "PUCEST",
+    "site_brand": "PUCEST Admin",
+    "welcome_sign": "Welcome to PUCEST Admin Portal",
+    "copyright": "PUCEST Ltd",
+    
+    # Top menu links for easy navigation
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {
+            "name": "New Users", 
+            "url": "admin:accounts_customuser_new",
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-user-plus"
+        },
+        {
+            "name": "Custom Users", 
+            "url": "admin:accounts_customuser_custom", 
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-users"
+        },
+        {
+            "name": "All Users", 
+            "url": "admin:accounts_customuser_changelist", 
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-list"
+        },
+    ],
+    
+    # Custom sidebar menu
+    "sidebar_menu": [
+        {
+            "name": "Dashboard",
+            "url": "admin:index",
+            "icon": "fas fa-tachometer-alt",
+        },
+        {
+            "name": "User Management",
+            "icon": "fas fa-users-cog",
+            "models": [
+                {
+                    "name": "New Users", 
+                    "url": "admin:accounts_customuser_new",
+                    "icon": "fas fa-user-clock",
+                    "badge": {
+                        "text": "New",
+                        "color": "warning"
+                    }
+                },
+                {
+                    "name": "Custom Users", 
+                    "url": "admin:accounts_customuser_custom",
+                    "icon": "fas fa-user-check",
+                    "badge": {
+                        "text": "Active", 
+                        "color": "success"
+                    }
+                },
+                {
+                    "name": "All Users",
+                    "url": "admin:accounts_customuser_changelist", 
+                    "icon": "fas fa-list"
+                },
+            ]
+        },
+        {
+            "name": "Authentication",
+            "icon": "fas fa-lock",
+            "models": [
+                {
+                    "name": "Groups",
+                    "url": "admin:auth_group_changelist",
+                    "icon": "fas fa-users",
+                },
+            ]
+        },
+    ],
+    
+    # Custom icons
     "icons": {
-        "auth": "fas fa-users-cog",
-        "Authentication.customuser": "fas fa-user",
-        "Authentication.location": "fas fa-map-marker-alt",
+        "accounts.CustomUser": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "location.Location": "fas fa-map-marker-alt",
+        "contacts.UserSelectedContact": "fas fa-address-book",
+        "contacts.ContactAssignment": "fas fa-tasks",
+        "contacts.Inquiry": "fas fa-question-circle",
+        "token_blacklist.OutstandingToken": "fas fa-key",
+        "token_blacklist.BlacklistedToken": "fas fa-ban",
     },
+    
+    # Show UI builder for additional customization
+    "show_ui_builder": True,
+}
 
-    # Sidebar settings
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-success",
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
 }
 
 
