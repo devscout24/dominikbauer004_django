@@ -11,9 +11,6 @@ from apps.location.models import Location
 from apps.contacts.models import UserSelectedContact
 # Create your models here.
 
-
-
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     customer_number = models.CharField(max_length=20, unique=True)
     company_name = models.CharField(max_length=500, blank=True)
@@ -22,6 +19,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=15, blank=True, null=True)
     billing_location = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Status field for user management
+    STATUS_CHOICES = (
+        ('new', 'New User'),  # Not active yet
+        ('active', 'Custom User'),  # Active user
+        ('inactive', 'Inactive'),
+    )
+    status = models.CharField(
+        max_length=10, 
+        choices=STATUS_CHOICES, 
+        default='new'
+    )
 
     # Single delivery location
     delivery_location = models.ForeignKey(
@@ -53,7 +62,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Use getattr to avoid issues during system checks
         self._previous_active = getattr(self, 'is_active', False)
 
     def set_password(self, raw_password):
@@ -62,13 +70,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self._new_password = raw_password
 
     def save(self, *args, **kwargs):
+        # Auto update status based on is_active
+        if self.is_active and self.status == 'new':
+            self.status = 'active'
+        elif not self.is_active and self.status == 'active':
+            self.status = 'inactive'
+            
         # Store previous active status before saving
         if self.pk:
-            self._previous_active = CustomUser.objects.get(pk=self.pk).is_active
+            try:
+                old_user = CustomUser.objects.get(pk=self.pk)
+                self._previous_active = old_user.is_active
+            except CustomUser.DoesNotExist:
+                self._previous_active = self.is_active
         else:
             self._previous_active = self.is_active
+            
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.customer_number
-
