@@ -11,7 +11,20 @@ from apps.location.models import Location
 from apps.contacts.models import UserSelectedContact
 # Create your models here.
 
+class ContactPerson(models.Model):
+    customer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="contact_persons"
+    )
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    designation = models.CharField(max_length=150, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.full_name} ({self.customer.customer_number})"
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
