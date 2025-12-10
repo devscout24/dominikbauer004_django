@@ -93,3 +93,6 @@ class UserProfileInfoView(APIView):
                 "error": str(e),
                 "data": {}
             })
+
+
+

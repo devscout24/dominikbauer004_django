@@ -9,8 +9,8 @@ def inquiry_image_path(instance, filename):
 
 class Inquiry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='inquiries')
-    phone = models.CharField(max_length=15)
-    title= models.CharField(max_length=455)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    title = models.CharField(max_length=455, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -41,8 +41,6 @@ class Inquiry(models.Model):
 
     def __str__(self):
         return f"Offer {self.offer_number} - {self.user.company_name}"
-
-
 
 
 class InquiryImage(models.Model):
