@@ -9,7 +9,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'customer_number', 'company_name', 'name', 
             'email', 'phone', 'billing_location', 
-            'delivery_location', 'contact_person'
+            'delivery_location', 'contact_person', 'created_at'
         ]
 
 

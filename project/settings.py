@@ -13,7 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Allowed Hosts (comma separated)
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "dominikbauer004.softvencealpha.com"]
+
+CSRF_TRUSTED_ORIGINS = ["https://dominikbauer004.softvencealpha.com"]
 
 
 # Build paths
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG= True
 # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # JWT Configuration
@@ -49,26 +51,126 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'User.CustomUser'
 
 
+# settings.py
+
 JAZZMIN_SETTINGS = {
     "site_title": "PUCEST Admin",
-    "site_header": "PUCEST Control Panel",
-    "site_brand": "PUCEST",
-    "welcome_sign": "Welcome to PUCEST Dashboard",
-    "copyright": "PUCEST Team © 2025",
-
-    # Icons for apps/models
+    "site_header": "PUCEST",
+    "site_brand": "PUCEST Admin",
+    "welcome_sign": "Welcome to PUCEST Admin Portal",
+    "copyright": "PUCEST Ltd",
+    
+    # Top menu links for easy navigation
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {
+            "name": "New Users", 
+            "url": "admin:accounts_customuser_new",
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-user-plus"
+        },
+        {
+            "name": "Custom Users", 
+            "url": "admin:accounts_customuser_custom", 
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-users"
+        },
+        {
+            "name": "All Users", 
+            "url": "admin:accounts_customuser_changelist", 
+            "permissions": ["accounts.view_customuser"],
+            "icon": "fas fa-list"
+        },
+    ],
+    
+    # Custom sidebar menu
+    "sidebar_menu": [
+        {
+            "name": "Dashboard",
+            "url": "admin:index",
+            "icon": "fas fa-tachometer-alt",
+        },
+        {
+            "name": "User Management",
+            "icon": "fas fa-users-cog",
+            "models": [
+                {
+                    "name": "New Users", 
+                    "url": "admin:accounts_customuser_new",
+                    "icon": "fas fa-user-clock",
+                    "badge": {
+                        "text": "New",
+                        "color": "warning"
+                    }
+                },
+                {
+                    "name": "Custom Users", 
+                    "url": "admin:accounts_customuser_custom",
+                    "icon": "fas fa-user-check",
+                    "badge": {
+                        "text": "Active", 
+                        "color": "success"
+                    }
+                },
+                {
+                    "name": "All Users",
+                    "url": "admin:accounts_customuser_changelist", 
+                    "icon": "fas fa-list"
+                },
+            ]
+        },
+        {
+            "name": "Authentication",
+            "icon": "fas fa-lock",
+            "models": [
+                {
+                    "name": "Groups",
+                    "url": "admin:auth_group_changelist",
+                    "icon": "fas fa-users",
+                },
+            ]
+        },
+    ],
+    
+    # Custom icons
     "icons": {
-        "auth": "fas fa-users-cog",
-        "Authentication.customuser": "fas fa-user",
-        "Authentication.location": "fas fa-map-marker-alt",
+        "accounts.CustomUser": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "location.Location": "fas fa-map-marker-alt",
+        "contacts.UserSelectedContact": "fas fa-address-book",
+        "contacts.ContactAssignment": "fas fa-tasks",
+        "contacts.Inquiry": "fas fa-question-circle",
+        "token_blacklist.OutstandingToken": "fas fa-key",
+        "token_blacklist.BlacklistedToken": "fas fa-ban",
     },
-
-    # Sidebar settings
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
+    
+    # Show UI builder for additional customization
+    "show_ui_builder": True,
 }
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-success",
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+}
+
 
 # Installed apps
 INSTALLED_APPS = [
@@ -105,6 +207,7 @@ INSTALLED_APPS = [
 # ]
 
 
+
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,7 +228,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,27 +242,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-# for development
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'myproject',
+        'USER': 'myprojectuser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
-
-
-# for production
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'myproject',
-#         'USER': 'myprojectuser',
-#         'PASSWORD': 'password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 
 
 
@@ -177,12 +270,20 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+JAZZMIN_SETTINGS = {
+    "site_header": "PUCEST Admin",
+    "site_title": "PUCEST Admin Portal",
+     "site_logo": "images/logo.png",
+     "welcome_sign": "Welcome to PUCEST Admin Portal",
+}
+
 # Static & Media
 MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [BASE_DIR / "static"]
+os.path.join(BASE_DIR, 'static')
 # Directory where collectstatic will collect static files
 STATIC_ROOT = BASE_DIR / "staticfiles"
 

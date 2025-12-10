@@ -23,16 +23,24 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     inlines = [ContactPersonInline, LocationInline]
 
+    # Different list displays for different views
     list_display = (
         'customer_number', 'company_name', 'email', 'phone',
-        'is_active', 'is_staff', 'is_superuser'
+        'status_badge', 'is_active', 'is_staff', 'created_at', 'admin_actions'
     )
-
+    
+    list_filter = ('status', 'is_active', 'is_staff', 'is_superuser', 'created_at')
+    
     fieldsets = (
         (None, {
             'fields': (
                 'customer_number', 'company_name', 'name',
-                'email', 'phone', 'billing_location', 'password'
+                'email', 'phone', 'billing_location', 'password', 'status'
+            )
+        }),
+        ('Delivery & Contact', {
+            'fields': (
+                'delivery_location', 'contact_person'
             )
         }),
         ('Delivery & Contact', {
