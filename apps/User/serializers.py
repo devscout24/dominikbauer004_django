@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, ContactPerson
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
@@ -23,5 +23,5 @@ class UserSelectedContactSerializer(serializers.ModelSerializer):
     selected_contact = ContactPersonSerializer(source='contact_person')
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ["selected_contact"]
