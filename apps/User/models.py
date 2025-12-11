@@ -11,7 +11,20 @@ from apps.location.models import Location
 from apps.contacts.models import UserSelectedContact
 # Create your models here.
 
+class ContactPerson(models.Model):
+    customer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="contact_persons"
+    )
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    designation = models.CharField(max_length=150, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.full_name} ({self.customer.customer_number})"
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -21,6 +34,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     billing_location = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Status field for user management
+    STATUS_CHOICES = (
+        ('new', 'New User'),  # Not active yet
+        ('active', 'Custom User'),  # Active user
+        ('inactive', 'Inactive'),
+    )
+    status = models.CharField(
+        max_length=10, 
+        choices=STATUS_CHOICES, 
+        default='new'
+    )
 
     # Single delivery location
     delivery_location = models.ForeignKey(
@@ -46,10 +72,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+    
+    class Meta:
+        ordering = ['created_at']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Use getattr to avoid issues during system checks
         self._previous_active = getattr(self, 'is_active', False)
 
     def set_password(self, raw_password):
@@ -58,13 +86,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self._new_password = raw_password
 
     def save(self, *args, **kwargs):
+        # Auto update status based on is_active
+        if self.is_active and self.status == 'new':
+            self.status = 'active'
+        elif not self.is_active and self.status == 'active':
+            self.status = 'inactive'
+            
         # Store previous active status before saving
         if self.pk:
-            self._previous_active = CustomUser.objects.get(pk=self.pk).is_active
+            try:
+                old_user = CustomUser.objects.get(pk=self.pk)
+                self._previous_active = old_user.is_active
+            except CustomUser.DoesNotExist:
+                self._previous_active = self.is_active
         else:
             self._previous_active = self.is_active
+            
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.customer_number
-

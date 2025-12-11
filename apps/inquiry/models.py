@@ -11,7 +11,7 @@ class Inquiry(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='inquiries')
     phone = models.CharField(max_length=15, blank=True, null=True)
     title = models.CharField(max_length=455, blank=True, null=True)
-    description = models.TextField(blank=True, null=True, blank = True)
+    description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     offer_number = models.CharField(max_length=20, unique=True, editable=False)
