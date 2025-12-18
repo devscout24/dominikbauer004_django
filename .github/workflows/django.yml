@@ -12,6 +12,8 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          export GIT_SSH_COMMAND="ssh -i /root/.ssh/deploy_key -o IdentitiesOnly=yes"
+
           git config --global --add safe.directory /root/dominikbauer004_django
           cd /root/dominikbauer004_django
 
