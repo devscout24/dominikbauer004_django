@@ -91,9 +91,6 @@ class InquiryCreateAPIView(BaseAPIView):
         phone = request.data.get("phone")
         description = request.data.get("description", "")
 
-        if not phone:
-            return self.error_response("Phone number is required")
-
         # ✅ Selected contact handling
         selected_contact = None
         try:
