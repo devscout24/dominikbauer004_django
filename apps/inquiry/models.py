@@ -43,8 +43,6 @@ class Inquiry(models.Model):
         return f"Offer {self.offer_number} - {self.user.company_name}"
 
 
-
-
 class InquiryImage(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=inquiry_image_path)
