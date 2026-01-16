@@ -5,7 +5,7 @@ from apps.contacts.models import ContactAssignment, UserSelectedContact
 from apps.Authentication.views import BaseAPIView
 from apps.contacts.serializers import ContactPersonSerializer, UserSelectContactSerializer
 from apps.location.serializers import LocationSerializer, UserDeliveryLocationSerializer
-from .serializers import UserInfoSerializer
+from .serializers import UserInfoSerializer, ContactPersonSerializer as UserContactPersonSerializer
 from .models import CustomUser
 from apps.location.models import Location
 
@@ -31,10 +31,10 @@ class UserProfileInfoView(APIView):
             # Assigned Contact Persons
             # ------------------------
             try:
-                assignment = getattr(user, "assigned_contacts", None)  # related_name
-                if assignment:
-                    assigned_serializer = ContactPersonSerializer(assignment)
-                    response_data["assigned_contact_persons"] = assigned_serializer.data.get('contact_persons', [])
+                assigned_contacts = user.contact_persons.all()
+                if assigned_contacts.exists():
+                    assigned_serializer = UserContactPersonSerializer(assigned_contacts, many=True)
+                    response_data["assigned_contact_persons"] = assigned_serializer.data
                 else:
                     response_data["assigned_contact_persons"] = []
             except Exception as e:
@@ -44,10 +44,9 @@ class UserProfileInfoView(APIView):
             # Selected Contact Person
             # ------------------------
             try:
-                selected_contact = getattr(user, "selected_contact", None)
-                if selected_contact:
-                    selected_serializer = UserSelectContactSerializer(selected_contact)
-                    response_data["selected_contact_person"] = selected_serializer.data.get('selected_contact', None)
+                if user.contact_person:
+                    selected_serializer = UserContactPersonSerializer(user.contact_person)
+                    response_data["selected_contact_person"] = selected_serializer.data
                 else:
                     response_data["selected_contact_person"] = None
             except Exception as e:

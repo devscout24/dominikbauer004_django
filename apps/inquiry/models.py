@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from apps.User.models import ContactPerson
 
 
 def inquiry_image_path(instance, filename):
@@ -16,12 +17,11 @@ class Inquiry(models.Model):
 
     offer_number = models.CharField(max_length=20, unique=True, editable=False)
     contact_person = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        ContactPerson,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='contact_inquiries',
-        limit_choices_to={'is_staff': True}
     )
 
     # Staff uploaded offer
@@ -35,8 +35,8 @@ class Inquiry(models.Model):
         if not self.offer_number:
             self.offer_number = str(uuid.uuid4().int)[:6]
         # Auto select contact if not manually set
-        if not self.contact_person and hasattr(self.user, 'selected_contact'):
-            self.contact_person = self.user.selected_contact.selected_contact
+        if not self.contact_person and self.user.contact_person:
+            self.contact_person = self.user.contact_person
         super().save(*args, **kwargs)
 
     def __str__(self):

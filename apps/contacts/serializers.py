@@ -1,7 +1,8 @@
 
 
+from apps.contacts.models import ContactAssignment
+from apps.contacts.models import UserSelectedContact
 from rest_framework import serializers
-from .models import *
 from django.contrib.auth import get_user_model
 
 User= get_user_model()
