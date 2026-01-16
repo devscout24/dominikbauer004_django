@@ -35,7 +35,7 @@ class InquirySerializer(serializers.ModelSerializer):
         if obj.contact_person:
             return {
                 "id": obj.contact_person.id,
-                "name": obj.contact_person.name,
+                "name": obj.contact_person.full_name,
                 "email": obj.contact_person.email,
                 "phone": obj.contact_person.phone
             }
@@ -52,7 +52,7 @@ class OfferDetailSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='user.company_name', read_only=True)
     name = serializers.CharField(source='user.name', read_only=True)
 
-    contact_person_name = serializers.CharField(source='contact_person.name', read_only=True)
+    contact_person_name = serializers.CharField(source='contact_person.full_name', read_only=True)
     contact_person_email = serializers.EmailField(source='contact_person.email', read_only=True)
     contact_person_phone = serializers.CharField(source='contact_person.phone', read_only=True)
 
