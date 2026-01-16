@@ -1,3 +1,4 @@
+from apps.User.serializers import ContactPersonSerializer
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth import authenticate
@@ -43,30 +44,6 @@ class BaseAPIView(APIView):
             "data": data or {}
             }, 
             status=status_code )    
-        
-class RegisterView(BaseAPIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []
-
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return self.success_response(
-                "User created. Admin will update full info and password.",
-                data=serializer.data,
-                status_code=status.HTTP_201_CREATED
-            )
-        except ValidationError as e:
-            return self.error_response("Validation Error", data=e.detail)
-        except Exception as e:
-            return self.error_response("An error occurred", data=str(e), status_code=500)
-
-class LoginView(BaseAPIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []
-
     def post(self, request):
         try:
             customer_number = request.data.get('customer_number')
@@ -126,9 +103,8 @@ class LoginView(BaseAPIView):
             # ------------------------
             selected_contact_data = None
             try:
-                selected_contact = getattr(user, "selected_contact", None)
-                if selected_contact:
-                    selected_serializer = UserSelectContactSerializer(selected_contact)
+                if user.contact_person:
+                    selected_serializer = ContactPersonSerializer(user.contact_person)
                     selected_contact_data = selected_serializer.data
             except Exception:
                 selected_contact_data = None
@@ -161,6 +137,30 @@ class LoginView(BaseAPIView):
                 data={"error": str(e)},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+class RegisterView(BaseAPIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return self.success_response(
+                "User created. Admin will update full info and password.",
+                data=serializer.data,
+                status_code=status.HTTP_201_CREATED
+            )
+        except ValidationError as e:
+            return self.error_response("Validation Error", data=e.detail)
+        except Exception as e:
+            return self.error_response("An error occurred", data=str(e), status_code=500)
+
+class LoginView(BaseAPIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
 
             
 class LogoutView(BaseAPIView):
@@ -225,3 +225,4 @@ class RequestPasswordResetView(BaseAPIView):
             data=serializer.errors,
             status_code=400
         )
+

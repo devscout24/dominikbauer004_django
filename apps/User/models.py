@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
 from apps.location.models import Location
-from apps.contacts.models import UserSelectedContact
+# from apps.contacts.models import UserSelectedContact
 # Create your models here.
 
 class ContactPerson(models.Model):
@@ -57,7 +57,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         related_name="users_with_delivery_location"
     )
     contact_person = models.ForeignKey(
-        UserSelectedContact,
+        ContactPerson,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

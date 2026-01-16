@@ -92,10 +92,8 @@ class InquiryCreateAPIView(BaseAPIView):
         description = request.data.get("description", "")
 
         # ✅ Selected contact handling
-        selected_contact = None
-        try:
-            selected_contact = user.selected_contact.selected_contact
-        except AttributeError:
+        selected_contact = user.contact_person
+        if not selected_contact:
             return self.error_response("No contact person selected for this user")
 
         # ✅ Save inquiry & images in atomic block
