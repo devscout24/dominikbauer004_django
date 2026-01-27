@@ -64,3 +64,14 @@ class CustomUserAdmin(UserAdmin):
 
     search_fields = ('customer_number', 'company_name', 'email', 'phone')
     ordering = ('customer_number',)
+
+
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj:
+            if "delivery_location" in form.base_fields:
+                form.base_fields["delivery_location"].queryset = Location.objects.filter(user=obj)
+            if "contact_person" in form.base_fields:
+                form.base_fields["contact_person"].queryset = ContactPerson.objects.filter(customer=obj)
+        return form
