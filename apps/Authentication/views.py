@@ -226,3 +226,13 @@ class RequestPasswordResetView(BaseAPIView):
             status_code=400
         )
 
+
+class DeleteAccountAPIView(BaseAPIView):
+    """Command: Permanently delete the authenticated user's account and related data as DB cascade."""
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        """Command: Delete request.user and return standardized confirmation."""
+        user = request.user
+        user.delete()
+        return self.success_response("Your account has been deleted.", status_code=status.HTTP_200_OK)
